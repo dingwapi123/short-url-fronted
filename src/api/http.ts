@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/v1'
+const API_BASE_URL = import.meta.env.VITE_REMOTE_API_BASE_URL || 'http://localhost:3000/v1'
 
 /**
  * 发送 HTTP 请求并返回 JSON 结果
@@ -24,7 +24,7 @@ export async function request<T>(path: string, init: RequestInit): Promise<T> {
     throw new Error(msg)
   }
 
-  return (data as T) as T
+  return data as T as T
 }
 
 /**
