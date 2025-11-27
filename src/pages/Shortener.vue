@@ -72,16 +72,6 @@ function open(url: string) {
   window.open(url, '_blank')
 }
 
-const apiBase = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:3000/v1'
-
-/**
- * 基于短码构造可访问的后端跳转链接
- * @param code 短码
- */
-function buildAccessibleUrl(code: string) {
-  return `${apiBase}/${code}`
-}
-
 /**
  * 截断过长字符串，中间打点
  * @param text 输入字符串
@@ -144,26 +134,16 @@ function displayTruncated(text: string, max = 96) {
     <div v-if="result" class="result-card">
       <div class="result-head">
         <span class="badge">创建成功</span>
-        <h2 class="short">{{ buildAccessibleUrl(result.urlCode) }}</h2>
+        <h2 class="short">{{ result.shortUrl }}</h2>
       </div>
 
-      <div class="grid">
-        <div class="item">
-          <div class="label">可直接访问短链</div>
-          <div class="mono truncate" :title="buildAccessibleUrl(result.urlCode)">
-            {{ buildAccessibleUrl(result.urlCode) }}
-          </div>
-          <div class="actions">
-            <button class="primary" @click="open(buildAccessibleUrl(result.urlCode))">打开</button>
-            <button class="ghost" @click="copy(buildAccessibleUrl(result.urlCode))">复制</button>
-          </div>
-        </div>
-
+      <div class="grid grid--one">
         <div class="item">
           <div class="label">后端返回短链</div>
           <div class="mono truncate" :title="result.shortUrl">{{ result.shortUrl }}</div>
           <div class="actions">
-            <button class="ghost" @click="copy(result.shortUrl)">复制</button>
+            <button class="primary" @click="open(result.shortUrl)">打开</button>
+            <button class="ghost" @click="copy(result.shortUrl)">复制短链</button>
           </div>
         </div>
 
@@ -175,11 +155,6 @@ function displayTruncated(text: string, max = 96) {
           <div class="actions">
             <button class="ghost" @click="copy(result.originalUrl)">复制原始链接</button>
           </div>
-        </div>
-
-        <div class="item">
-          <div class="label">使用前端域名跳转</div>
-          <router-link class="mono" :to="`/${result.urlCode}`">/{{ result.urlCode }}</router-link>
         </div>
       </div>
     </div>
@@ -333,6 +308,9 @@ h1 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   padding: 0 16px 16px;
+}
+.grid--one {
+  grid-template-columns: 1fr;
 }
 .item {
   border-top: 1px dashed #eee;
