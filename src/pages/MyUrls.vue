@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getAllUrlRecord, type UrlRecord } from '@/api/urlRecord'
+import { getAllUrlRecord, deleteUrlRecord, type UrlRecord } from '@/api/urlRecord'
 
 const urls = ref<UrlRecord[]>([])
 const loading = ref(true)
@@ -36,6 +36,18 @@ function openUrl(url: string) {
   window.open(url, '_blank')
 }
 
+async function handleDelete(id: number) {
+  if (!confirm('确定要删除这个短链接吗？')) return
+
+  try {
+    await deleteUrlRecord(id)
+    // Remove from local list
+    urls.value = urls.value.filter((u) => u.id !== id)
+  } catch (err: any) {
+    alert(err.message || '删除失败')
+  }
+}
+
 onMounted(() => {
   fetchUrls()
 })
@@ -58,7 +70,34 @@ onMounted(() => {
         <div v-for="url in urls" :key="url.id" class="url-card">
           <div class="card-header">
             <span class="icon">🔗</span>
-            <span class="title">{{ url.urlCode }}</span>
+            <div style="overflow: hidden">
+              <div class="title" :title="url.title || url.urlCode">
+                {{ url.title || url.urlCode }}
+              </div>
+              <div v-if="url.description" class="desc" :title="url.description">
+                {{ url.description }}
+              </div>
+              <div v-if="url.category" class="category-badge">
+                {{ url.category }}
+              </div>
+            </div>
+            <button class="btn-icon delete" @click="handleDelete(url.id)" title="删除">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 6h18"></path>
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+              </svg>
+            </button>
           </div>
 
           <div class="card-body">
@@ -145,24 +184,47 @@ onMounted(() => {
 
 .card-header {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 10px;
   margin-bottom: 12px;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
 }
 
 .icon {
-  font-size: 18px;
+  font-size: 20px;
+  line-height: 1;
+  padding-top: 2px;
 }
 
 .title {
-  font-weight: 500;
+  font-weight: 600;
   color: var(--foreground);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 16px;
+  margin-bottom: 2px;
+}
+
+.desc {
+  font-size: 12px;
+  color: var(--foreground);
+  opacity: 0.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.category-badge {
+  display: inline-block;
+  font-size: 11px;
+  margin-top: 4px;
+  padding: 2px 6px;
+  background: color-mix(in srgb, var(--foreground), transparent 90%);
+  color: var(--foreground);
+  border-radius: 4px;
+  opacity: 0.8;
 }
 
 .card-body {
@@ -237,7 +299,20 @@ onMounted(() => {
   opacity: 0.9;
 }
 
-.footer {
-  display: none;
+.btn-icon {
+  background: transparent;
+  border: none;
+  color: var(--foreground);
+  opacity: 0.4;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  margin-left: auto;
+  transition: all 0.2s;
+}
+.btn-icon:hover {
+  opacity: 1;
+  background: color-mix(in srgb, #ff4d4f, transparent 90%);
+  color: #ff4d4f;
 }
 </style>

@@ -41,6 +41,30 @@ export async function postJson<T>(path: string, body: unknown): Promise<T> {
 }
 
 /**
+ * 发送 PUT JSON 请求
+ * @param path 请求路径
+ * @param body 请求体对象，将被序列化为 JSON
+ * @returns 解析后的 JSON 数据
+ */
+export async function putJson<T>(path: string, body: unknown): Promise<T> {
+  return request<T>(path, {
+    method: 'PUT',
+    body: JSON.stringify(body ?? {}),
+  })
+}
+
+/**
+ * 发送 DELETE 请求
+ * @param path 请求路径
+ * @returns 解析后的 JSON 数据
+ */
+export async function deleteJson<T>(path: string): Promise<T> {
+  return request<T>(path, {
+    method: 'DELETE',
+  })
+}
+
+/**
  * 发送 GET 请求
  * @param path 请求路径
  * @returns 解析后的 JSON 数据

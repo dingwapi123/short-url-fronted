@@ -4,6 +4,9 @@ import { createUrlRecord, type UrlRecord } from '@/api/urlRecord'
 
 const originalUrl = ref('')
 const customAlias = ref('')
+const title = ref('')
+const description = ref('')
+const category = ref('')
 const loading = ref(false)
 const error = ref('')
 const result = ref<UrlRecord | null>(null)
@@ -17,7 +20,13 @@ async function handleSubmit() {
     error.value = ''
     result.value = null
 
-    const res = await createUrlRecord(originalUrl.value, customAlias.value || undefined)
+    const res = await createUrlRecord(
+      originalUrl.value,
+      customAlias.value || undefined,
+      title.value || undefined,
+      description.value || undefined,
+      category.value || undefined,
+    )
     if (res.data) {
       result.value = res.data
       // Optional: Clear inputs on success?
@@ -49,6 +58,9 @@ function copyResult() {
 function clearForm() {
   originalUrl.value = ''
   customAlias.value = ''
+  title.value = ''
+  description.value = ''
+  category.value = ''
   error.value = ''
   result.value = null
 }
@@ -82,15 +94,50 @@ function clearForm() {
             {{ showAdvanced ? '收起高级选项' : '展开高级选项' }}
           </button>
 
-          <div v-if="showAdvanced" style="margin-top: 12px">
-            <div class="label" style="margin-bottom: 6px">自定义后缀 (可选)</div>
-            <input
-              v-model="customAlias"
-              type="text"
-              class="input"
-              placeholder="例如: my-link"
-              :disabled="loading"
-            />
+          <div v-if="showAdvanced" style="margin-top: 12px; display: grid; gap: 12px">
+            <div>
+              <div class="label" style="margin-bottom: 6px">自定义后缀 (可选)</div>
+              <input
+                v-model="customAlias"
+                type="text"
+                class="input"
+                placeholder="例如: my-link"
+                :disabled="loading"
+              />
+            </div>
+
+            <div>
+              <div class="label" style="margin-bottom: 6px">标题 (可选)</div>
+              <input
+                v-model="title"
+                type="text"
+                class="input"
+                placeholder="给链接起个名字..."
+                :disabled="loading"
+              />
+            </div>
+
+            <div>
+              <div class="label" style="margin-bottom: 6px">分类 (可选)</div>
+              <input
+                v-model="category"
+                type="text"
+                class="input"
+                placeholder="例如: 工作, 个人, 营销..."
+                :disabled="loading"
+              />
+            </div>
+
+            <div>
+              <div class="label" style="margin-bottom: 6px">描述 (可选)</div>
+              <textarea
+                v-model="description"
+                class="input"
+                style="height: 80px; resize: vertical"
+                placeholder="备注用途..."
+                :disabled="loading"
+              ></textarea>
+            </div>
           </div>
         </div>
 
@@ -120,6 +167,10 @@ function clearForm() {
         <div class="item">
           <div class="label">创建时间</div>
           <div class="mono">{{ result.createdAt || '刚刚' }}</div>
+        </div>
+        <div class="item" v-if="result.title">
+          <div class="label">标题</div>
+          <div class="mono truncate">{{ result.title }}</div>
         </div>
       </div>
 
