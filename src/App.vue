@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import Toast from '@/components/Toast.vue'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 
 const isDark = ref(false)
 
@@ -111,5 +113,7 @@ onMounted(() => {
   </header>
   <main>
     <router-view />
+    <Toast />
+    <ConfirmDialog />
   </main>
 </template>

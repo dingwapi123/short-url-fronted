@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { createUrlRecord, type UrlRecord } from '@/api/urlRecord'
+import { useToast } from '@/composables/useToast'
 
 const originalUrl = ref('')
 const customAlias = ref('')
@@ -11,6 +12,8 @@ const loading = ref(false)
 const error = ref('')
 const result = ref<UrlRecord | null>(null)
 const showAdvanced = ref(false)
+
+const { showToast } = useToast()
 
 async function handleSubmit() {
   if (!originalUrl.value) return
@@ -44,10 +47,10 @@ function copyResult() {
     navigator.clipboard
       .writeText(result.value.shortUrl)
       .then(() => {
-        alert('已复制到剪贴板')
+        showToast('已复制到剪贴板', 'success')
       })
       .catch(() => {
-        alert('复制失败')
+        showToast('复制失败', 'error')
       })
   }
 }

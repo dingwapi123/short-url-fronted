@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { getAllUrlRecord, deleteUrlRecord, type UrlRecord } from '@/api/urlRecord'
+import { useToast } from '@/composables/useToast'
+import { useConfirm } from '@/composables/useConfirm'
 
 const urls = ref<UrlRecord[]>([])
 const loading = ref(true)
 const error = ref('')
+
+const { showToast } = useToast()
+const { showConfirm } = useConfirm()
 
 async function fetchUrls() {
   try {
@@ -24,11 +29,10 @@ function copyUrl(url: string) {
   navigator.clipboard
     .writeText(url)
     .then(() => {
-      // Could add a toast notification here if available
-      alert('复制成功')
+      showToast('复制成功', 'success')
     })
     .catch(() => {
-      alert('复制失败，请手动复制')
+      showToast('复制失败，请手动复制', 'error')
     })
 }
 
@@ -37,14 +41,16 @@ function openUrl(url: string) {
 }
 
 async function handleDelete(id: number) {
-  if (!confirm('确定要删除这个短链接吗？')) return
+  const confirmed = await showConfirm('确定要删除这个短链接吗？', '删除确认')
+  if (!confirmed) return
 
   try {
     await deleteUrlRecord(id)
     // Remove from local list
     urls.value = urls.value.filter((u) => u.id !== id)
+    showToast('删除成功', 'success')
   } catch (err) {
-    alert(err instanceof Error ? err.message : '删除失败')
+    showToast(err instanceof Error ? err.message : '删除失败', 'error')
   }
 }
 
