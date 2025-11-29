@@ -5,13 +5,13 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'Home',
-      component: () => import('@/pages/Shortener.vue'),
-    },
-    {
-      path: '/my-urls',
       name: 'MyUrls',
       component: () => import('@/pages/MyUrls.vue'),
+    },
+    {
+      path: '/shortener',
+      name: 'Shortener',
+      component: () => import('@/pages/Shortener.vue'),
     },
     {
       path: '/:urlCode',
