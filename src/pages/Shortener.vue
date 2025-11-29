@@ -210,7 +210,7 @@ h1 {
   line-height: 1.5;
 }
 .input:focus {
-  border-color: #42b883;
+  border-color: #3eb37f;
   background: #fff;
 }
 .input-tools {
@@ -237,12 +237,12 @@ h1 {
 .link {
   border: none;
   background: none;
-  color: #42b883;
+  color: #3eb37f;
   cursor: pointer;
 }
 .btn {
   height: 42px;
-  background: linear-gradient(135deg, #42b883, #2fa06e);
+  background: #3eb37f;
   border: none;
   color: #fff;
   border-radius: 8px;
@@ -291,7 +291,7 @@ h1 {
 .badge {
   display: inline-block;
   font-size: 12px;
-  color: #2fa06e;
+  color: #3eb37f;
   background: #e8f7f0;
   border: 1px solid #d5f0e3;
   border-radius: 999px;
@@ -340,7 +340,7 @@ h1 {
   padding: 0 12px;
   border: none;
   color: #fff;
-  background: #3da46d;
+  background: #3eb37f;
   border-radius: 6px;
   cursor: pointer;
 }

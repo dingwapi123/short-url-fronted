@@ -38,3 +38,11 @@ export async function createUrlRecord(
 export async function getOriginUrl(urlCode: string): Promise<ApiResponse<string>> {
   return getJson<ApiResponse<string>>(`/${encodeURIComponent(urlCode)}`)
 }
+
+/**
+ * 获取所有短链记录
+ * @returns 所有短链记录列表
+ */
+export async function getAllUrlRecord(): Promise<ApiResponse<UrlRecord[]>> {
+  return getJson<ApiResponse<UrlRecord[]>>('/urlRecord')
+}

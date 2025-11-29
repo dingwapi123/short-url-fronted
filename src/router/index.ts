@@ -9,6 +9,11 @@ const router = createRouter({
       component: () => import('@/pages/Shortener.vue'),
     },
     {
+      path: '/my-urls',
+      name: 'MyUrls',
+      component: () => import('@/pages/MyUrls.vue'),
+    },
+    {
       path: '/:urlCode',
       name: 'Redirect',
       component: () => import('@/pages/Redirect.vue'),

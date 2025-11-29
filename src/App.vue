@@ -3,7 +3,13 @@
 <template>
   <header class="header">
     <nav class="nav">
-      <router-link class="logo" to="/">Short URL</router-link>
+      <div class="nav-left">
+        <router-link class="logo" to="/">Short URL</router-link>
+      </div>
+      <div class="nav-right">
+        <router-link class="nav-link" to="/">创建</router-link>
+        <router-link class="nav-link" to="/my-urls">我的</router-link>
+      </div>
     </nav>
   </header>
   <main>
@@ -24,10 +30,30 @@
   max-width: 1000px;
   margin: 0 auto;
   padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .logo {
   font-weight: 700;
-  color: #2fa06e;
+  color: #3eb37f;
   text-decoration: none;
+  font-size: 18px;
+}
+.nav-right {
+  display: flex;
+  gap: 20px;
+}
+.nav-link {
+  color: #666;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+.nav-link:hover {
+  color: #3eb37f;
+}
+.nav-link.router-link-active {
+  color: #3eb37f;
 }
 </style>
