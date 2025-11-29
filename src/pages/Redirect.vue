@@ -51,7 +51,7 @@ onMounted(() => {
     <div class="max-w-[720px] mx-auto py-10 px-5 font-sans">
       <h1 class="text-3xl font-bold text-base-content mb-8 text-center">正在跳转</h1>
       <p v-if="loading">请稍候…</p>
-      <p v-else-if="error" class="error">{{ error }}</p>
+      <p v-else-if="error" class="text-error">{{ error }}</p>
       <p v-else>
         如果没有自动跳转，
         <a :href="origin" target="_self" rel="noopener">点击这里</a>
@@ -60,13 +60,4 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
-.container {
-  max-width: 720px;
-  margin: 40px auto;
-  padding: 0 16px;
-}
-.error {
-  color: #e74c3c;
-}
-</style>
+<style scoped></style>
