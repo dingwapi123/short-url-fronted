@@ -46,8 +46,6 @@ onMounted(() => {
     <h1 class="page-title">我的链接</h1>
 
     <div class="main-card">
-      <h2 class="section-title">历史记录</h2>
-
       <div v-if="loading" class="loading">加载中...</div>
 
       <div v-else-if="error" class="error">
@@ -107,13 +105,6 @@ onMounted(() => {
   padding: 32px;
   min-height: 400px;
   transition: background-color 0.3s;
-}
-
-.section-title {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--foreground);
-  margin-bottom: 24px;
 }
 
 .loading,
