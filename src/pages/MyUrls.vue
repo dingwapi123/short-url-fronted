@@ -13,8 +13,8 @@ async function fetchUrls() {
     if (res.data) {
       urls.value = res.data.reverse() // Show newest first
     }
-  } catch (err: any) {
-    error.value = err.message || '获取链接列表失败'
+  } catch (err) {
+    error.value = err instanceof Error ? err.message : '获取链接列表失败'
   } finally {
     loading.value = false
   }
@@ -43,8 +43,8 @@ async function handleDelete(id: number) {
     await deleteUrlRecord(id)
     // Remove from local list
     urls.value = urls.value.filter((u) => u.id !== id)
-  } catch (err: any) {
-    alert(err.message || '删除失败')
+  } catch (err) {
+    alert(err instanceof Error ? err.message : '删除失败')
   }
 }
 
@@ -54,10 +54,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="max-w-[1200px] mx-auto my-10 px-5 font-sans">
-    <h1 class="text-3xl font-bold text-base-content mb-8 text-center">我的链接</h1>
+  <div class="bg-base-200 min-h-screen w-full">
+    <div class="max-w-[1200px] mx-auto py-10 px-5 font-sans">
+      <h1 class="text-3xl font-bold text-base-content mb-8 text-center">我的链接</h1>
 
-    <div class="card bg-base-100 shadow-xl min-h-[400px]">
       <div class="card-body">
         <div v-if="loading" class="flex justify-center items-center h-64">
           <span class="loading loading-spinner loading-lg"></span>

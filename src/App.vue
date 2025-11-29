@@ -40,7 +40,7 @@ onMounted(() => {
 
 <template>
   <header
-    class="sticky top-0 z-10 backdrop-blur-sm bg-base-100/80 border-b border-base-300 transition-colors duration-300"
+    class="sticky top-0 z-10 backdrop-blur-sm bg-base-200 border-b border-base-300 transition-colors duration-300"
   >
     <nav class="max-w-[1000px] mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center">
