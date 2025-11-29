@@ -65,7 +65,7 @@ function clearForm() {
 
 <template>
   <div class="bg-base-200 min-h-screen w-full">
-    <div class="max-w-[860px] mx-auto my-8 px-5">
+    <div class="max-w-[860px] mx-auto py-10 px-5 font-sans">
       <div
         class="card bg-base-100 border border-base-300 shadow-sm p-5 transition-all duration-300"
       >
