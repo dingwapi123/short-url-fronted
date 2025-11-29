@@ -150,12 +150,8 @@ onMounted(() => {
               </div>
 
               <div class="card-actions justify-end mt-auto">
-                <button class="btn btn-outline btn-sm flex-1" @click="copyUrl(url.shortUrl)">
-                  复制
-                </button>
-                <button class="btn btn-primary btn-sm flex-1" @click="openUrl(url.shortUrl)">
-                  访问
-                </button>
+                <button class="btn btn-sm flex-1" @click="openUrl(url.shortUrl)">访问</button>
+                <button class="btn btn-sm flex-1" @click="copyUrl(url.shortUrl)">复制</button>
               </div>
             </div>
           </div>
