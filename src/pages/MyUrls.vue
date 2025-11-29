@@ -88,7 +88,7 @@ onMounted(() => {
 
         <div v-else-if="urls.length === 0" class="text-center p-10 text-base-content/60">
           <p>暂无记录</p>
-          <router-link to="/" class="btn btn-primary mt-4">去创建</router-link>
+          <router-link to="/shortener" class="btn btn-primary mt-4">去创建</router-link>
         </div>
 
         <div v-else class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5">
