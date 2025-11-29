@@ -81,7 +81,7 @@ function clearForm() {
           <div class="text-[13px] text-foreground/80 mb-1.5">原始链接</div>
           <textarea
             v-model="originalUrl"
-            class="h-auto min-h-[96px] resize-y leading-relaxed font-inherit p-2.5 border border-border rounded-lg outline-none bg-background text-foreground w-full transition-colors duration-200 focus:border-primary focus:bg-card"
+            class="h-auto min-h-24 resize-y leading-relaxed font-inherit p-2.5 border border-border rounded-lg outline-none bg-background text-foreground w-full transition-colors duration-200 focus:border-primary focus:bg-card"
             placeholder="请输入需要缩短的长链接 (http:// or https://)..."
             :disabled="loading"
           ></textarea>
