@@ -22,11 +22,8 @@ function toggleTheme() {
 }
 
 function applyTheme() {
-  if (isDark.value) {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }
+  // DaisyUI uses data-theme attribute
+  document.documentElement.setAttribute('data-theme', isDark.value ? 'dark' : 'light')
 }
 
 onMounted(() => {
@@ -43,7 +40,7 @@ onMounted(() => {
 
 <template>
   <header
-    class="sticky top-0 z-10 backdrop-blur-sm bg-background/80 border-b border-border transition-colors duration-300"
+    class="sticky top-0 z-10 backdrop-blur-sm bg-base-100/80 border-b border-base-300 transition-colors duration-300"
   >
     <nav class="max-w-[1000px] mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center">
@@ -54,19 +51,19 @@ onMounted(() => {
       <div class="flex gap-5 items-center">
         <!-- Navigation Links: "我的" before "创建" -->
         <router-link
-          class="text-sm font-medium text-foreground/70 no-underline transition-all hover:text-primary hover:opacity-100 [&.router-link-active]:text-primary [&.router-link-active]:opacity-100"
+          class="text-sm font-medium text-base-content/70 no-underline transition-all hover:text-primary hover:opacity-100 [&.router-link-active]:text-primary [&.router-link-active]:opacity-100"
           to="/"
           >我的</router-link
         >
         <router-link
-          class="text-sm font-medium text-foreground/70 no-underline transition-all hover:text-primary hover:opacity-100 [&.router-link-active]:text-primary [&.router-link-active]:opacity-100"
+          class="text-sm font-medium text-base-content/70 no-underline transition-all hover:text-primary hover:opacity-100 [&.router-link-active]:text-primary [&.router-link-active]:opacity-100"
           to="/shortener"
           >创建</router-link
         >
 
         <!-- Theme Toggle Button -->
         <button
-          class="bg-transparent border-none cursor-pointer text-foreground p-1 rounded flex items-center justify-center transition-colors hover:text-primary hover:bg-primary/10"
+          class="btn btn-ghost btn-circle btn-sm text-base-content"
           @click="toggleTheme"
           :title="isDark ? '切换到亮色模式' : '切换到暗色模式'"
         >
