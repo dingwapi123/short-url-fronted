@@ -42,19 +42,31 @@ onMounted(() => {
 </script>
 
 <template>
-  <header class="header">
-    <nav class="nav">
-      <div class="nav-left">
-        <router-link class="logo" to="/">Short URL</router-link>
+  <header
+    class="sticky top-0 z-10 backdrop-blur-sm bg-background/80 border-b border-border transition-colors duration-300"
+  >
+    <nav class="max-w-[1000px] mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center">
+        <router-link class="font-bold text-primary text-lg no-underline" to="/"
+          >Short URL</router-link
+        >
       </div>
-      <div class="nav-right">
+      <div class="flex gap-5 items-center">
         <!-- Navigation Links: "我的" before "创建" -->
-        <router-link class="nav-link" to="/">我的</router-link>
-        <router-link class="nav-link" to="/shortener">创建</router-link>
+        <router-link
+          class="text-sm font-medium text-foreground/70 no-underline transition-all hover:text-primary hover:opacity-100 [&.router-link-active]:text-primary [&.router-link-active]:opacity-100"
+          to="/"
+          >我的</router-link
+        >
+        <router-link
+          class="text-sm font-medium text-foreground/70 no-underline transition-all hover:text-primary hover:opacity-100 [&.router-link-active]:text-primary [&.router-link-active]:opacity-100"
+          to="/shortener"
+          >创建</router-link
+        >
 
         <!-- Theme Toggle Button -->
         <button
-          class="theme-toggle"
+          class="bg-transparent border-none cursor-pointer text-foreground p-1 rounded flex items-center justify-center transition-colors hover:text-primary hover:bg-primary/10"
           @click="toggleTheme"
           :title="isDark ? '切换到亮色模式' : '切换到暗色模式'"
         >
@@ -104,80 +116,3 @@ onMounted(() => {
     <router-view />
   </main>
 </template>
-
-<style scoped>
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  backdrop-filter: saturate(180%) blur(8px);
-  background-color: color-mix(in srgb, var(--background), transparent 20%);
-  border-bottom: 1px solid var(--border);
-  transition:
-    background-color 0.3s,
-    border-color 0.3s;
-}
-
-.nav {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 12px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  font-weight: 700;
-  color: var(--primary);
-  text-decoration: none;
-  font-size: 18px;
-}
-
-.nav-right {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
-
-.nav-link {
-  color: var(--foreground);
-  opacity: 0.7;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  transition:
-    color 0.2s,
-    opacity 0.2s;
-}
-
-.nav-link:hover {
-  color: var(--primary);
-  opacity: 1;
-}
-
-.nav-link.router-link-active {
-  color: var(--primary);
-  opacity: 1;
-}
-
-.theme-toggle {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--foreground);
-  padding: 4px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    color 0.2s,
-    background-color 0.2s;
-}
-
-.theme-toggle:hover {
-  color: var(--primary);
-  background-color: color-mix(in srgb, var(--primary), transparent 90%);
-}
-</style>

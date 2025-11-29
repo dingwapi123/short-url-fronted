@@ -54,34 +54,52 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container">
-    <h1 class="page-title">我的链接</h1>
+  <div class="max-w-[1200px] mx-auto my-10 px-5 font-sans">
+    <h1 class="text-[28px] font-semibold text-foreground mb-6 text-center">我的链接</h1>
 
-    <div class="main-card">
-      <div v-if="loading" class="loading">加载中...</div>
+    <div class="bg-card rounded-xl shadow-sm p-8 min-h-[400px] transition-colors duration-300">
+      <div v-if="loading" class="text-center p-10 text-foreground/60">加载中...</div>
 
-      <div v-else-if="error" class="error">
+      <div v-else-if="error" class="text-center p-10 text-red-500 opacity-100">
         {{ error }}
       </div>
 
-      <div v-else-if="urls.length === 0" class="loading">暂无记录</div>
+      <div v-else-if="urls.length === 0" class="text-center p-10 text-foreground/60">暂无记录</div>
 
-      <div v-else class="grid-container">
-        <div v-for="url in urls" :key="url.id" class="url-card">
-          <div class="card-header">
-            <span class="icon">🔗</span>
-            <div style="overflow: hidden">
-              <div class="title" :title="url.title || url.urlCode">
+      <div v-else class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-5 mb-8">
+        <div
+          v-for="url in urls"
+          :key="url.id"
+          class="bg-card border border-border rounded-lg p-4 transition-all duration-300 flex flex-col hover:shadow-md hover:border-border hover:-translate-y-0.5"
+        >
+          <div class="flex items-start gap-2.5 mb-3 pb-3 border-b border-border">
+            <span class="text-xl leading-none pt-0.5">🔗</span>
+            <div class="overflow-hidden">
+              <div
+                class="font-semibold text-foreground whitespace-nowrap overflow-hidden text-ellipsis text-base mb-0.5"
+                :title="url.title || url.urlCode"
+              >
                 {{ url.title || url.urlCode }}
               </div>
-              <div v-if="url.description" class="desc" :title="url.description">
+              <div
+                v-if="url.description"
+                class="text-xs text-foreground/60 whitespace-nowrap overflow-hidden text-ellipsis"
+                :title="url.description"
+              >
                 {{ url.description }}
               </div>
-              <div v-if="url.category" class="category-badge">
+              <div
+                v-if="url.category"
+                class="inline-block text-[11px] mt-1 px-1.5 py-0.5 bg-foreground/10 text-foreground rounded opacity-80"
+              >
                 {{ url.category }}
               </div>
             </div>
-            <button class="btn-icon delete" @click="handleDelete(url.id)" title="删除">
+            <button
+              class="bg-transparent border-none text-foreground/40 cursor-pointer p-1 rounded ml-auto transition-all duration-200 hover:opacity-100 hover:bg-red-500/10 hover:text-red-500"
+              @click="handleDelete(url.id)"
+              title="删除"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -100,19 +118,34 @@ onMounted(() => {
             </button>
           </div>
 
-          <div class="card-body">
-            <div class="link-group">
-              <div class="link-item" :title="url.originalUrl">
+          <div class="flex-1 flex flex-col gap-4">
+            <div class="flex flex-col gap-2">
+              <div
+                class="text-[13px] leading-normal whitespace-nowrap overflow-hidden text-ellipsis px-2 py-1 bg-background rounded text-foreground/80 transition-colors duration-300"
+                :title="url.originalUrl"
+              >
                 {{ url.originalUrl }}
               </div>
-              <div class="link-item short">
+              <div
+                class="text-[13px] leading-normal whitespace-nowrap overflow-hidden text-ellipsis px-2 py-1 bg-primary/10 rounded text-primary opacity-100 transition-colors duration-300"
+              >
                 {{ url.shortUrl }}
               </div>
             </div>
 
-            <div class="action-group">
-              <button class="btn btn-outline" @click="copyUrl(url.shortUrl)">复制</button>
-              <button class="btn btn-primary" @click="openUrl(url.shortUrl)">访问</button>
+            <div class="grid grid-cols-2 gap-3 mt-auto">
+              <button
+                class="h-9 rounded-md border border-border cursor-pointer text-sm transition-all duration-200 font-medium bg-transparent text-foreground hover:text-primary hover:border-primary"
+                @click="copyUrl(url.shortUrl)"
+              >
+                复制
+              </button>
+              <button
+                class="h-9 rounded-md border-none cursor-pointer text-sm transition-all duration-200 font-medium bg-primary text-primary-foreground hover:opacity-90"
+                @click="openUrl(url.shortUrl)"
+              >
+                访问
+              </button>
             </div>
           </div>
         </div>
@@ -120,199 +153,3 @@ onMounted(() => {
     </div>
   </div>
 </template>
-
-<style scoped>
-.container {
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 0 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-}
-
-.page-title {
-  font-size: 28px;
-  font-weight: 600;
-  color: var(--foreground);
-  margin-bottom: 24px;
-  text-align: center;
-}
-
-.main-card {
-  background: var(--card);
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-  padding: 32px;
-  min-height: 400px;
-  transition: background-color 0.3s;
-}
-
-.loading,
-.error {
-  text-align: center;
-  padding: 40px;
-  color: var(--foreground);
-  opacity: 0.6;
-}
-
-.error {
-  color: #ff4d4f;
-  opacity: 1;
-}
-
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  margin-bottom: 32px;
-}
-
-.url-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px;
-  transition: all 0.3s ease;
-  display: flex;
-  flex-direction: column;
-}
-
-.url-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-color: var(--border);
-  transform: translateY(-2px);
-}
-
-.card-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-.icon {
-  font-size: 20px;
-  line-height: 1;
-  padding-top: 2px;
-}
-
-.title {
-  font-weight: 600;
-  color: var(--foreground);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 16px;
-  margin-bottom: 2px;
-}
-
-.desc {
-  font-size: 12px;
-  color: var(--foreground);
-  opacity: 0.6;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.category-badge {
-  display: inline-block;
-  font-size: 11px;
-  margin-top: 4px;
-  padding: 2px 6px;
-  background: color-mix(in srgb, var(--foreground), transparent 90%);
-  color: var(--foreground);
-  border-radius: 4px;
-  opacity: 0.8;
-}
-
-.card-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.link-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.link-item {
-  font-size: 13px;
-  line-height: 1.5;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 4px 8px;
-  background: var(--background);
-  border-radius: 4px;
-  color: var(--foreground);
-  opacity: 0.8;
-  transition:
-    background-color 0.3s,
-    color 0.3s;
-}
-
-.link-item.short {
-  color: var(--primary);
-  background: color-mix(in srgb, var(--primary), transparent 90%);
-  opacity: 1;
-}
-
-.action-group {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: auto;
-}
-
-.btn {
-  height: 36px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s;
-  font-weight: 500;
-}
-
-.btn-outline {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--foreground);
-}
-
-.btn-outline:hover {
-  color: var(--primary);
-  border-color: var(--primary);
-}
-
-.btn-primary {
-  background: var(--primary);
-  color: var(--primary-foreground);
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-}
-
-.btn-icon {
-  background: transparent;
-  border: none;
-  color: var(--foreground);
-  opacity: 0.4;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  margin-left: auto;
-  transition: all 0.2s;
-}
-.btn-icon:hover {
-  opacity: 1;
-  background: color-mix(in srgb, #ff4d4f, transparent 90%);
-  color: #ff4d4f;
-}
-</style>

@@ -67,73 +67,83 @@ function clearForm() {
 </script>
 
 <template>
-  <div class="container">
-    <div class="form-card">
-      <div class="form-head">
-        <h1>创建短链接</h1>
-        <span class="tip">快速生成简短易记的链接</span>
+  <div class="max-w-[860px] mx-auto my-8 px-5">
+    <div
+      class="bg-card border border-border rounded-xl shadow-sm p-5 transition-colors duration-300"
+    >
+      <div class="flex items-baseline justify-between mb-2">
+        <h1 class="text-[22px] m-0 mb-2 text-foreground font-normal">创建短链接</h1>
+        <span class="text-foreground/60 text-[13px]">快速生成简短易记的链接</span>
       </div>
 
-      <div class="form">
+      <div class="grid gap-3">
         <div>
-          <div class="label" style="margin-bottom: 6px">原始链接</div>
+          <div class="text-[13px] text-foreground/80 mb-1.5">原始链接</div>
           <textarea
             v-model="originalUrl"
-            class="input input--textarea"
+            class="h-auto min-h-[96px] resize-y leading-relaxed font-inherit p-2.5 border border-border rounded-lg outline-none bg-background text-foreground w-full transition-colors duration-200 focus:border-primary focus:bg-card"
             placeholder="请输入需要缩短的长链接 (http:// or https://)..."
             :disabled="loading"
           ></textarea>
-          <div class="input-tools">
-            <span class="counter">{{ originalUrl.length }} 字符</span>
-            <button v-if="originalUrl" class="ghost" @click="clearForm">清空</button>
+          <div class="flex justify-between items-center mt-1">
+            <span class="text-foreground/50 text-xs">{{ originalUrl.length }} 字符</span>
+            <button
+              v-if="originalUrl"
+              class="bg-transparent border border-border text-foreground/80 rounded-md h-[30px] px-2.5 cursor-pointer transition-all duration-200 hover:border-primary hover:text-primary hover:opacity-100"
+              @click="clearForm"
+            >
+              清空
+            </button>
           </div>
         </div>
 
-        <div class="adv">
-          <button class="link" @click="showAdvanced = !showAdvanced">
+        <div class="mt-0.5">
+          <button
+            class="border-none bg-none text-primary cursor-pointer p-0 text-[13px]"
+            @click="showAdvanced = !showAdvanced"
+          >
             {{ showAdvanced ? '收起高级选项' : '展开高级选项' }}
           </button>
 
-          <div v-if="showAdvanced" style="margin-top: 12px; display: grid; gap: 12px">
+          <div v-if="showAdvanced" class="mt-3 grid gap-3">
             <div>
-              <div class="label" style="margin-bottom: 6px">自定义后缀 (可选)</div>
+              <div class="text-[13px] text-foreground/80 mb-1.5">自定义后缀 (可选)</div>
               <input
                 v-model="customAlias"
                 type="text"
-                class="input"
+                class="h-10 p-2.5 border border-border rounded-lg outline-none bg-background text-foreground w-full transition-colors duration-200 focus:border-primary focus:bg-card"
                 placeholder="例如: my-link"
                 :disabled="loading"
               />
             </div>
 
             <div>
-              <div class="label" style="margin-bottom: 6px">标题 (可选)</div>
+              <div class="text-[13px] text-foreground/80 mb-1.5">标题 (可选)</div>
               <input
                 v-model="title"
                 type="text"
-                class="input"
+                class="h-10 p-2.5 border border-border rounded-lg outline-none bg-background text-foreground w-full transition-colors duration-200 focus:border-primary focus:bg-card"
                 placeholder="给链接起个名字..."
                 :disabled="loading"
               />
             </div>
 
             <div>
-              <div class="label" style="margin-bottom: 6px">分类 (可选)</div>
+              <div class="text-[13px] text-foreground/80 mb-1.5">分类 (可选)</div>
               <input
                 v-model="category"
                 type="text"
-                class="input"
+                class="h-10 p-2.5 border border-border rounded-lg outline-none bg-background text-foreground w-full transition-colors duration-200 focus:border-primary focus:bg-card"
                 placeholder="例如: 工作, 个人, 营销..."
                 :disabled="loading"
               />
             </div>
 
             <div>
-              <div class="label" style="margin-bottom: 6px">描述 (可选)</div>
+              <div class="text-[13px] text-foreground/80 mb-1.5">描述 (可选)</div>
               <textarea
                 v-model="description"
-                class="input"
-                style="height: 80px; resize: vertical"
+                class="h-20 resize-y p-2.5 border border-border rounded-lg outline-none bg-background text-foreground w-full transition-colors duration-200 focus:border-primary focus:bg-card"
                 placeholder="备注用途..."
                 :disabled="loading"
               ></textarea>
@@ -141,279 +151,75 @@ function clearForm() {
           </div>
         </div>
 
-        <div v-if="error" class="alert alert--error">
+        <div
+          v-if="error"
+          class="mt-4 p-2.5 rounded-lg text-sm bg-red-500/10 text-red-500 border border-red-500/20"
+        >
           {{ error }}
         </div>
 
-        <button class="btn" @click="handleSubmit" :disabled="loading || !originalUrl">
-          <span v-if="loading" class="spinner"></span>
+        <button
+          class="h-[42px] bg-primary border-none text-primary-foreground rounded-lg cursor-pointer transition-opacity duration-200 font-medium flex items-center justify-center hover:opacity-90 disabled:opacity-70 disabled:cursor-not-allowed"
+          @click="handleSubmit"
+          :disabled="loading || !originalUrl"
+        >
+          <span
+            v-if="loading"
+            class="w-[18px] h-[18px] rounded-full border-2 border-white/50 border-t-white inline-block animate-spin"
+          ></span>
           <span v-else>生成短链</span>
         </button>
       </div>
     </div>
 
     <!-- Result Card -->
-    <div v-if="result" class="result-card">
-      <div class="result-head">
-        <span class="badge">创建成功</span>
-        <div class="short">{{ result.shortUrl }}</div>
-      </div>
-
-      <div class="grid">
-        <div class="item">
-          <div class="label">原始链接</div>
-          <div class="mono truncate" :title="result.originalUrl">{{ result.originalUrl }}</div>
-        </div>
-        <div class="item">
-          <div class="label">创建时间</div>
-          <div class="mono">{{ result.createdAt || '刚刚' }}</div>
-        </div>
-        <div class="item" v-if="result.title">
-          <div class="label">标题</div>
-          <div class="mono truncate">{{ result.title }}</div>
+    <div
+      v-if="result"
+      class="mt-[18px] border border-border rounded-xl shadow-sm bg-card transition-colors duration-300"
+    >
+      <div class="p-4 pb-0">
+        <span
+          class="inline-block text-xs text-primary bg-primary/10 border border-primary/20 rounded-full px-2 py-0.5"
+          >创建成功</span
+        >
+        <div class="my-2.5 mr-4 text-lg break-all text-primary font-semibold">
+          {{ result.shortUrl }}
         </div>
       </div>
 
-      <div style="padding: 0 16px 16px">
-        <div class="actions">
-          <button class="primary" @click="copyResult">复制链接</button>
-          <button class="ghost" @click="result = null">继续创建</button>
+      <div class="grid grid-cols-2 gap-3 p-4 pb-4">
+        <div class="border-t border-dashed border-border pt-3">
+          <div class="text-xs text-foreground/60 mb-1">原始链接</div>
+          <div class="font-mono text-foreground text-[13px] truncate" :title="result.originalUrl">
+            {{ result.originalUrl }}
+          </div>
+        </div>
+        <div class="border-t border-dashed border-border pt-3">
+          <div class="text-xs text-foreground/60 mb-1">创建时间</div>
+          <div class="font-mono text-foreground text-[13px]">{{ result.createdAt || '刚刚' }}</div>
+        </div>
+        <div class="border-t border-dashed border-border pt-3" v-if="result.title">
+          <div class="text-xs text-foreground/60 mb-1">标题</div>
+          <div class="font-mono text-foreground text-[13px] truncate">{{ result.title }}</div>
+        </div>
+      </div>
+
+      <div class="px-4 pb-4">
+        <div class="flex gap-2 mt-2">
+          <button
+            class="h-8 px-3 border-none text-primary-foreground bg-primary rounded-md cursor-pointer transition-opacity duration-200 text-[13px] font-medium hover:opacity-90"
+            @click="copyResult"
+          >
+            复制链接
+          </button>
+          <button
+            class="h-8 px-3 bg-transparent border border-border text-foreground/80 rounded-md cursor-pointer transition-all duration-200 text-[13px] hover:border-primary hover:text-primary hover:opacity-100"
+            @click="result = null"
+          >
+            继续创建
+          </button>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.container {
-  max-width: 860px;
-  margin: 32px auto;
-  padding: 0 20px;
-}
-.form-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  padding: 20px;
-  transition:
-    background-color 0.3s,
-    border-color 0.3s;
-}
-.form-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-}
-h1 {
-  font-size: 22px;
-  margin: 0 0 8px;
-  color: var(--foreground);
-}
-.tip {
-  color: var(--foreground);
-  opacity: 0.6;
-  font-size: 13px;
-}
-.form {
-  display: grid;
-  gap: 12px;
-}
-.label {
-  font-size: 13px;
-  color: var(--foreground);
-  opacity: 0.8;
-}
-.input {
-  height: 40px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  outline: none;
-  background: var(--background);
-  color: var(--foreground);
-  width: 100%;
-  transition:
-    border-color 0.2s,
-    background-color 0.2s;
-}
-.input--textarea {
-  height: auto;
-  min-height: 96px;
-  resize: vertical;
-  line-height: 1.5;
-  font-family: inherit;
-}
-.input:focus {
-  border-color: var(--primary);
-  background: var(--card);
-}
-.input-tools {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 4px;
-}
-.counter {
-  color: var(--foreground);
-  opacity: 0.5;
-  font-size: 12px;
-}
-.ghost {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--foreground);
-  opacity: 0.8;
-  border-radius: 6px;
-  height: 30px;
-  padding: 0 10px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.ghost:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-  opacity: 1;
-}
-.adv {
-  margin-top: 2px;
-}
-.link {
-  border: none;
-  background: none;
-  color: var(--primary);
-  cursor: pointer;
-  padding: 0;
-  font-size: 13px;
-}
-.btn {
-  height: 42px;
-  background: var(--primary);
-  border: none;
-  color: var(--primary-foreground);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: opacity 0.2s;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.btn:hover {
-  opacity: 0.9;
-}
-.btn[disabled] {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-.spinner {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  border-top-color: #fff;
-  display: inline-block;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.alert {
-  margin-top: 16px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 14px;
-}
-.alert--error {
-  background: color-mix(in srgb, #e74c3c, transparent 90%);
-  color: #e74c3c;
-  border: 1px solid color-mix(in srgb, #e74c3c, transparent 80%);
-}
-
-.result-card {
-  margin-top: 18px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-  background: var(--card);
-  transition:
-    background-color 0.3s,
-    border-color 0.3s;
-}
-.result-head {
-  padding: 16px 16px 0;
-}
-.badge {
-  display: inline-block;
-  font-size: 12px;
-  color: var(--primary);
-  background: color-mix(in srgb, var(--primary), transparent 90%);
-  border: 1px solid color-mix(in srgb, var(--primary), transparent 80%);
-  border-radius: 999px;
-  padding: 2px 8px;
-}
-.short {
-  margin: 10px 0 12px;
-  padding: 0 16px 0 0;
-  font-size: 18px;
-  word-break: break-all;
-  color: var(--primary);
-  font-weight: 600;
-}
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  padding: 0 16px 16px;
-}
-.grid--one {
-  grid-template-columns: 1fr;
-}
-.item {
-  border-top: 1px dashed var(--border);
-  padding-top: 12px;
-}
-.label {
-  font-size: 12px;
-  color: var(--foreground);
-  opacity: 0.6;
-}
-.mono {
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
-    monospace;
-  color: var(--foreground);
-  font-size: 13px;
-}
-.truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-}
-.primary {
-  height: 32px;
-  padding: 0 12px;
-  border: none;
-  color: var(--primary-foreground);
-  background: var(--primary);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: opacity 0.2s;
-  font-size: 13px;
-  font-weight: 500;
-}
-.primary:hover {
-  opacity: 0.9;
-}
-.ghost {
-  height: 32px;
-}
-</style>
