@@ -1,73 +1,81 @@
 <script setup lang="ts">
-defineOptions({ name: 'MyUrlsPage' })
 import { ref, onMounted } from 'vue'
 import { getAllUrlRecord, type UrlRecord } from '@/api/urlRecord'
 
-const records = ref<UrlRecord[]>([])
-const loading = ref(false)
+const urls = ref<UrlRecord[]>([])
+const loading = ref(true)
 const error = ref('')
 
-async function fetchRecords() {
-  loading.value = true
+async function fetchUrls() {
   try {
-    const { message, data } = await getAllUrlRecord()
-    if (data) {
-      // 按时间倒序排列
-      records.value = data.sort((a, b) => (b.id > a.id ? 1 : -1))
-    } else {
-      error.value = message || '获取记录失败'
+    loading.value = true
+    const res = await getAllUrlRecord()
+    if (res.data) {
+      urls.value = res.data.reverse() // Show newest first
     }
-  } catch (e) {
-    error.value = (e as Error).message
+  } catch (err: any) {
+    error.value = err.message || '获取链接列表失败'
   } finally {
     loading.value = false
   }
 }
 
-function copy(text: string) {
-  navigator.clipboard.writeText(text)
-  alert('已复制到剪贴板')
+function copyUrl(url: string) {
+  navigator.clipboard
+    .writeText(url)
+    .then(() => {
+      // Could add a toast notification here if available
+      alert('复制成功')
+    })
+    .catch(() => {
+      alert('复制失败，请手动复制')
+    })
 }
 
 function openUrl(url: string) {
   window.open(url, '_blank')
 }
 
-onMounted(fetchRecords)
+onMounted(() => {
+  fetchUrls()
+})
 </script>
 
 <template>
   <div class="container">
-    <h1 class="page-title">个人导航主页</h1>
+    <h1 class="page-title">我的链接</h1>
 
     <div class="main-card">
-      <h2 class="section-title">我的短链接</h2>
+      <h2 class="section-title">历史记录</h2>
 
       <div v-if="loading" class="loading">加载中...</div>
-      <div v-else-if="error" class="error">{{ error }}</div>
+
+      <div v-else-if="error" class="error">
+        {{ error }}
+      </div>
+
+      <div v-else-if="urls.length === 0" class="loading">暂无记录</div>
 
       <div v-else class="grid-container">
-        <div v-for="record in records" :key="record.id" class="url-card">
+        <div v-for="url in urls" :key="url.id" class="url-card">
           <div class="card-header">
             <span class="icon">🔗</span>
-            <span class="title" :title="record.originalUrl">
-              {{ record.urlCode || 'Short Link' }}
-            </span>
+            <span class="title">{{ url.urlCode }}</span>
           </div>
 
           <div class="card-body">
             <div class="link-group">
-              <div class="link-item original" :title="record.originalUrl">
-                {{ record.originalUrl }}
+              <div class="link-item" :title="url.originalUrl">
+                {{ url.originalUrl }}
               </div>
-              <div class="link-item short" :title="record.shortUrl">
-                {{ record.shortUrl }}
+              <div class="link-item short">
+                {{ url.shortUrl }}
               </div>
             </div>
 
             <div class="action-group">
-              <button class="btn btn-outline" @click="copy(record.shortUrl)">复制</button>
-              <button class="btn btn-primary" @click="openUrl(record.shortUrl)">打开</button>
+              <button class="btn btn-outline" @click="copyUrl(url.shortUrl)">复制</button>
+              <button class="btn btn-primary" @click="openUrl(url.shortUrl)">访问</button>
             </div>
           </div>
         </div>
@@ -87,23 +95,24 @@ onMounted(fetchRecords)
 .page-title {
   font-size: 28px;
   font-weight: 600;
-  color: #333;
+  color: var(--foreground);
   margin-bottom: 24px;
   text-align: center;
 }
 
 .main-card {
-  background: #fff;
+  background: var(--card);
   border-radius: 12px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
   padding: 32px;
   min-height: 400px;
+  transition: background-color 0.3s;
 }
 
 .section-title {
   font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: var(--foreground);
   margin-bottom: 24px;
 }
 
@@ -111,11 +120,13 @@ onMounted(fetchRecords)
 .error {
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: var(--foreground);
+  opacity: 0.6;
 }
 
 .error {
   color: #ff4d4f;
+  opacity: 1;
 }
 
 .grid-container {
@@ -126,8 +137,8 @@ onMounted(fetchRecords)
 }
 
 .url-card {
-  background: #fff;
-  border: 1px solid #e8e8e8;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 16px;
   transition: all 0.3s ease;
@@ -137,7 +148,7 @@ onMounted(fetchRecords)
 
 .url-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-color: #d9d9d9;
+  border-color: var(--border);
   transform: translateY(-2px);
 }
 
@@ -147,7 +158,7 @@ onMounted(fetchRecords)
   gap: 8px;
   margin-bottom: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--border);
 }
 
 .icon {
@@ -156,7 +167,7 @@ onMounted(fetchRecords)
 
 .title {
   font-weight: 500;
-  color: #333;
+  color: var(--foreground);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -183,14 +194,19 @@ onMounted(fetchRecords)
   overflow: hidden;
   text-overflow: ellipsis;
   padding: 4px 8px;
-  background: #f9f9f9;
+  background: var(--background);
   border-radius: 4px;
-  color: #666;
+  color: var(--foreground);
+  opacity: 0.8;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
 .link-item.short {
-  color: #1890ff;
-  background: #e6f7ff;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary), transparent 90%);
+  opacity: 1;
 }
 
 .action-group {
@@ -211,23 +227,23 @@ onMounted(fetchRecords)
 }
 
 .btn-outline {
-  background: #fff;
-  border: 1px solid #d9d9d9;
-  color: #666;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--foreground);
 }
 
 .btn-outline:hover {
-  color: #40a9ff;
-  border-color: #40a9ff;
+  color: var(--primary);
+  border-color: var(--primary);
 }
 
 .btn-primary {
-  background: #3eb37f;
-  color: #fff;
+  background: var(--primary);
+  color: var(--primary-foreground);
 }
 
 .btn-primary:hover {
-  background: #359a6d;
+  opacity: 0.9;
 }
 
 .footer {
