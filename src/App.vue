@@ -49,8 +49,8 @@ onMounted(() => {
       </div>
       <div class="nav-right">
         <!-- Navigation Links: "我的" before "创建" -->
-        <router-link class="nav-link" to="/my-urls">我的</router-link>
-        <router-link class="nav-link" to="/">创建</router-link>
+        <router-link class="nav-link" to="/">我的</router-link>
+        <router-link class="nav-link" to="/shortener">创建</router-link>
 
         <!-- Theme Toggle Button -->
         <button
