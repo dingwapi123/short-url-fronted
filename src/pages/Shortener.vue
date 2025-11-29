@@ -66,7 +66,9 @@ function clearForm() {
 <template>
   <div class="bg-base-200 min-h-screen w-full">
     <div class="max-w-[860px] mx-auto py-10 px-5 font-sans">
+      <!-- 创建卡片 -->
       <div
+        v-if="!result"
         class="card bg-base-100 border border-base-300 shadow-sm p-5 transition-all duration-300"
       >
         <div class="flex items-baseline justify-between mb-4">
@@ -145,9 +147,10 @@ function clearForm() {
                 <div class="label py-1">
                   <span class="label-text">描述 (可选)</span>
                 </div>
+                <br />
                 <textarea
                   v-model="description"
-                  class="textarea textarea-bordered h-20"
+                  class="textarea textarea-bordered h-20 w-full"
                   placeholder="备注用途..."
                   :disabled="loading"
                 ></textarea>
@@ -183,10 +186,10 @@ function clearForm() {
         </div>
       </div>
 
-      <!-- Result Card -->
+      <!-- 结果 -->
       <div
         v-if="result"
-        class="card bg-base-100 border border-base-300 shadow-sm mt-6 transition-all duration-300"
+        class="card bg-base-100 border border-base-300 shadow-sm transition-all duration-300"
       >
         <div class="card-body p-5">
           <div class="flex items-center gap-2 mb-2">
@@ -213,7 +216,7 @@ function clearForm() {
 
           <div class="card-actions justify-start mt-4">
             <button class="btn btn-primary btn-sm" @click="copyResult">复制链接</button>
-            <button class="btn btn-outline btn-sm" @click="result = null">继续创建</button>
+            <button class="btn btn-outline btn-sm" @click="clearForm">继续创建</button>
           </div>
         </div>
       </div>
