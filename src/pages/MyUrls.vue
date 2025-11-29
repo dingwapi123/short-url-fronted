@@ -1,12 +1,22 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getAllUrlRecord, deleteUrlRecord, type UrlRecord } from '@/api/urlRecord'
+import { getAllUrlRecord, deleteUrlRecord, updateUrlRecord, type UrlRecord } from '@/api/urlRecord'
 import { useToast } from '@/composables/useToast'
 import { useConfirm } from '@/composables/useConfirm'
 
 const urls = ref<UrlRecord[]>([])
 const loading = ref(true)
 const error = ref('')
+
+const editModalOpen = ref(false)
+const editingUrl = ref<UrlRecord | null>(null)
+const editForm = ref({
+  title: '',
+  category: '',
+  description: '',
+  urlCode: '',
+})
+const updating = ref(false)
 
 const { showToast } = useToast()
 const { showConfirm } = useConfirm()
@@ -51,6 +61,45 @@ async function handleDelete(id: number) {
     showToast('删除成功', 'success')
   } catch (err) {
     showToast(err instanceof Error ? err.message : '删除失败', 'error')
+  }
+}
+
+function openEditModal(url: UrlRecord) {
+  editingUrl.value = url
+  editForm.value = {
+    title: url.title || '',
+    category: url.category || '',
+    description: url.description || '',
+    urlCode: url.urlCode || '',
+  }
+  editModalOpen.value = true
+}
+
+async function handleUpdate() {
+  if (!editingUrl.value) return
+
+  try {
+    updating.value = true
+    const res = await updateUrlRecord(editingUrl.value.id, {
+      title: editForm.value.title,
+      category: editForm.value.category,
+      description: editForm.value.description,
+      urlCode: editForm.value.urlCode,
+    })
+
+    if (res.data) {
+      // Update local list
+      const index = urls.value.findIndex((u) => u.id === editingUrl.value!.id)
+      if (index !== -1) {
+        urls.value[index] = { ...urls.value[index], ...res.data }
+      }
+      showToast('修改成功', 'success')
+      editModalOpen.value = false
+    }
+  } catch (err) {
+    showToast(err instanceof Error ? err.message : '修改失败', 'error')
+  } finally {
+    updating.value = false
   }
 }
 
@@ -104,9 +153,9 @@ onMounted(() => {
                   <div class="flex items-center gap-2 mb-1.5">
                     <h2
                       class="card-title text-xl font-bold text-base-content truncate"
-                      :title="url.title || url.urlCode"
+                      :title="url.title"
                     >
-                      {{ url.title || url.urlCode }}
+                      {{ url.title }}
                     </h2>
                   </div>
 
@@ -233,7 +282,7 @@ onMounted(() => {
                 </button>
                 <button
                   class="btn btn-primary h-10 min-h-0 text-sm hover:scale-[1.02] active:scale-[0.98] transition-transform text-white shadow-primary/20 shadow-lg"
-                  @click="copyUrl(url.shortUrl)"
+                  @click="openEditModal(url)"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -246,16 +295,82 @@ onMounted(() => {
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                     />
                   </svg>
-                  复制
+                  修改
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div v-if="editModalOpen" class="modal modal-open">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg mb-4">修改短链接信息</h3>
+
+        <div class="form-control w-full mb-3">
+          <label class="label">
+            <span class="label-text">标题</span>
+          </label>
+          <input
+            v-model="editForm.title"
+            type="text"
+            class="input input-bordered w-full"
+            placeholder="请输入标题"
+          />
+        </div>
+
+        <div class="form-control w-full mb-3">
+          <label class="label">
+            <span class="label-text">自定义后缀 (urlCode)</span>
+          </label>
+          <input
+            v-model="editForm.urlCode"
+            type="text"
+            class="input input-bordered w-full"
+            placeholder="请输入自定义后缀"
+          />
+        </div>
+
+        <div class="form-control w-full mb-3">
+          <label class="label">
+            <span class="label-text">分类</span>
+          </label>
+          <input
+            v-model="editForm.category"
+            type="text"
+            class="input input-bordered w-full"
+            placeholder="请输入分类"
+          />
+        </div>
+
+        <div class="form-control w-full mb-4">
+          <label class="label">
+            <span class="label-text">描述</span>
+          </label>
+          <br />
+          <textarea
+            v-model="editForm.description"
+            class="textarea textarea-bordered w-full h-24"
+            placeholder="请输入描述"
+          ></textarea>
+        </div>
+
+        <div class="modal-action">
+          <button class="btn" @click="editModalOpen = false" :disabled="updating">取消</button>
+          <button class="btn btn-primary" @click="handleUpdate" :disabled="updating">
+            <span v-if="updating" class="loading loading-spinner"></span>
+            保存
+          </button>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button @click="editModalOpen = false">close</button>
+      </form>
     </div>
   </div>
 </template>

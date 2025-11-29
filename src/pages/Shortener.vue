@@ -17,6 +17,10 @@ const { showToast } = useToast()
 
 async function handleSubmit() {
   if (!originalUrl.value) return
+  if (!title.value.trim()) {
+    error.value = '请输入标题'
+    return
+  }
 
   try {
     loading.value = true
@@ -82,7 +86,7 @@ function clearForm() {
         <div class="grid gap-4">
           <div class="form-control">
             <div class="label">
-              <span class="label-text">原始链接</span>
+              <span class="label-text">原始链接<span class="text-error">*</span></span>
             </div>
             <textarea
               v-model="originalUrl"
@@ -96,6 +100,19 @@ function clearForm() {
                 清空
               </button>
             </div>
+          </div>
+
+          <div class="form-control">
+            <div class="label py-1">
+              <span class="label-text">标题 <span class="text-error">*</span></span>
+            </div>
+            <input
+              v-model="title"
+              type="text"
+              class="input input-bordered w-full"
+              placeholder="给链接起个名字..."
+              :disabled="loading"
+            />
           </div>
 
           <div>
@@ -116,19 +133,6 @@ function clearForm() {
                   type="text"
                   class="input input-bordered w-full"
                   placeholder="例如: my-link"
-                  :disabled="loading"
-                />
-              </div>
-
-              <div class="form-control">
-                <div class="label py-1">
-                  <span class="label-text">标题 (可选)</span>
-                </div>
-                <input
-                  v-model="title"
-                  type="text"
-                  class="input input-bordered w-full"
-                  placeholder="给链接起个名字..."
                   :disabled="loading"
                 />
               </div>
@@ -181,7 +185,7 @@ function clearForm() {
           <button
             class="btn btn-primary w-full text-base font-medium"
             @click="handleSubmit"
-            :disabled="loading || !originalUrl"
+            :disabled="loading || !originalUrl || !title"
           >
             <span v-if="loading" class="loading loading-spinner loading-sm"></span>
             <span v-else>生成短链</span>
