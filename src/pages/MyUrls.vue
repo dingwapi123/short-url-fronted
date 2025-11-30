@@ -78,6 +78,16 @@ function openEditModal(url: UrlRecord) {
 async function handleUpdate() {
   if (!editingUrl.value) return
 
+  if (!editForm.value.title.trim()) {
+    showToast('标题不能为空', 'error')
+    return
+  }
+
+  if (!editForm.value.urlCode.trim()) {
+    showToast('自定义后缀不能为空', 'error')
+    return
+  }
+
   try {
     updating.value = true
     const res = await updateUrlRecord(editingUrl.value.id, {
