@@ -16,6 +16,10 @@ export interface UrlRecord {
 export interface ApiResponse<T> {
   message: string
   data?: T
+  total?: number
+  page?: number
+  pageSize?: number
+  totalPages?: number
 }
 
 /**
@@ -51,10 +55,15 @@ export async function getOriginUrl(urlCode: string): Promise<ApiResponse<string>
 }
 
 /**
- * 获取所有短链记录
+ * 获取所有短链记录（支持分页）
+ * @param page 当前页码 (默认1) 
+ * @param pageSize 每页数量 (默认10)
  */
-export async function getAllUrlRecord(): Promise<ApiResponse<UrlRecord[]>> {
-  return getJson<ApiResponse<UrlRecord[]>>('/urlRecord')
+export async function getAllUrlRecord(
+  page: number = 1,
+  pageSize: number = 10
+): Promise<ApiResponse<UrlRecord[]>> {
+  return getJson<ApiResponse<UrlRecord[]>>(`/urlRecord?page=${page}&pageSize=${pageSize}`)
 }
 
 /**

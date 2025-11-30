@@ -8,6 +8,12 @@ const urls = ref<UrlRecord[]>([])
 const loading = ref(true)
 const error = ref('')
 
+// Pagination state
+const page = ref(1)
+const pageSize = ref(6)
+const total = ref(0)
+const totalPages = ref(1)
+
 const editModalOpen = ref(false)
 const editingUrl = ref<UrlRecord | null>(null)
 const editForm = ref({
@@ -24,14 +30,25 @@ const { showConfirm } = useConfirm()
 async function fetchUrls() {
   try {
     loading.value = true
-    const res = await getAllUrlRecord()
+    const res = await getAllUrlRecord(page.value, pageSize.value)
     if (res.data) {
-      urls.value = res.data.reverse() // Show newest first
+      urls.value = res.data
+      total.value = res.total || 0
+      totalPages.value = res.totalPages || 1
     }
   } catch (err) {
     error.value = err instanceof Error ? err.message : '获取链接列表失败'
   } finally {
     loading.value = false
+  }
+}
+
+function handlePageChange(newPage: number) {
+  if (newPage >= 1 && newPage <= totalPages.value) {
+    page.value = newPage
+    fetchUrls()
+    // Scroll to top smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 }
 
@@ -318,6 +335,57 @@ onMounted(() => {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div v-if="urls.length > 0" class="flex justify-center mt-12 mb-8">
+          <div class="join shadow-sm border border-base-300 bg-base-100">
+            <button
+              class="join-item btn btn-sm btn-ghost hover:bg-base-200"
+              :disabled="page === 1"
+              @click="handlePageChange(page - 1)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+
+            <button class="join-item btn btn-sm btn-ghost no-animation cursor-default font-normal">
+              第 {{ page }} / {{ totalPages }} 页
+            </button>
+
+            <button
+              class="join-item btn btn-sm btn-ghost hover:bg-base-200"
+              :disabled="page === totalPages"
+              @click="handlePageChange(page + 1)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
