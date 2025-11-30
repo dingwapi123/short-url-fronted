@@ -222,7 +222,7 @@ function clearForm() {
           </div>
 
           <div class="card-actions justify-start mt-4">
-            <button class="btn btn-primary btn-sm" @click="copyResult">复制链接</button>
+            <button class="btn btn-outline btn-primary btn-sm" @click="copyResult">复制链接</button>
             <button class="btn btn-outline btn-sm" @click="clearForm">继续创建</button>
           </div>
         </div>
