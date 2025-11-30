@@ -5,7 +5,7 @@ const { toastState } = useToast()
 </script>
 
 <template>
-  <div v-if="toastState.show" class="toast toast-top toast-center z-50">
+  <div v-if="toastState.show" class="toast toast-top toast-center z-[9999]">
     <div
       class="alert transition-all duration-300 shadow-lg"
       :class="{
