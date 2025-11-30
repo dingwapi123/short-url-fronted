@@ -158,8 +158,8 @@ onMounted(() => {
           >
             <div class="card-body p-6">
               <!-- Header Area -->
-              <div class="flex justify-between items-start mb-1 min-h-[5rem]">
-                <div class="flex-1 min-w-0">
+              <div class="flex justify-between items-start mb-1 relative">
+                <div class="flex-1 min-w-0 mr-8">
                   <div class="flex items-center gap-2 mb-1.5">
                     <h2
                       class="card-title text-xl font-bold text-base-content truncate"
@@ -168,28 +168,10 @@ onMounted(() => {
                       {{ url.title }}
                     </h2>
                   </div>
-
-                  <div class="flex flex-col gap-1.5">
-                    <div
-                      v-if="url.category"
-                      class="self-start badge badge-neutral text-neutral-content border-none rounded-md h-6 px-2 text-xs font-normal"
-                    >
-                      {{ url.category }}
-                    </div>
-                    <p
-                      v-if="url.description"
-                      class="text-sm text-base-content/60 truncate w-full"
-                      :title="url.description"
-                    >
-                      {{ url.description }}
-                    </p>
-                    <!-- Placeholder to maintain height if empty -->
-                    <div v-else-if="!url.category" class="h-5"></div>
-                  </div>
                 </div>
 
                 <button
-                  class="btn btn-ghost btn-circle btn-sm text-base-content/40 hover:text-error -mr-2 -mt-2"
+                  class="btn btn-ghost btn-circle btn-sm text-base-content/40 hover:text-error -mr-2 -mt-2 absolute top-0 right-0"
                   @click="handleDelete(url.id)"
                   title="删除"
                 >
@@ -208,6 +190,27 @@ onMounted(() => {
                     />
                   </svg>
                 </button>
+              </div>
+
+              <!-- Category Badge Area (Right Aligned) -->
+              <div class="flex justify-end mb-2 h-6">
+                <p
+                  v-if="url.description"
+                  class="text-sm text-base-content/60 line-clamp-2 w-full break-all"
+                  :title="url.description"
+                >
+                  {{ url.description }}
+                </p>
+              </div>
+
+              <!-- Category Badge Area (Right Aligned) -->
+              <div class="flex justify-end mb-2 h-6">
+                <div
+                  v-if="url.category"
+                  class="badge badge-neutral text-neutral-content border-none rounded-md h-6 px-2 text-xs font-normal"
+                >
+                  {{ url.category }}
+                </div>
               </div>
 
               <!-- URL Display Area -->
