@@ -204,12 +204,15 @@ onMounted(() => {
               </div>
 
               <!-- Category Badge Area (Right Aligned) -->
-              <div class="flex justify-end mb-2 h-6">
+              <div class="flex justify-end mb-2 h-6 gap-1">
                 <div
-                  v-if="url.category"
+                  v-for="(tag, index) in url.category
+                    ? url.category.split(/[;；]/).filter((t) => t.trim())
+                    : []"
+                  :key="index"
                   class="badge badge-neutral text-neutral-content border-none rounded-md h-6 px-2 text-xs font-normal"
                 >
-                  {{ url.category }}
+                  {{ tag.trim() }}
                 </div>
               </div>
 
