@@ -192,11 +192,11 @@ onMounted(() => {
                 </button>
               </div>
 
-              <!-- Category Badge Area (Right Aligned) -->
-              <div class="flex justify-end mb-2 h-6">
+              <!-- description Area -->
+              <div class="flex justify-end mb-2 min-h-[2.5rem]">
                 <p
                   v-if="url.description"
-                  class="text-sm text-base-content/60 line-clamp-2 w-full break-all"
+                  class="text-sm text-base-content/60 line-clamp-2 w-full break-all whitespace-pre-wrap"
                   :title="url.description"
                 >
                   {{ url.description }}
